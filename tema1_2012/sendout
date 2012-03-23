@@ -1,0 +1,123 @@
+20
+
+Each of the past three centuries has been dominated by a single technology. The 18th century was the era of
+the great mechanical systems accompanying the Industrial Revolution. The 19th century was the age of the
+steam engine. During the 20th century, the key technology was information gathering, processing, and
+distribution. Among other developments, we saw the installation of worldwide telephone networks, the invention
+of radio and television, the birth and unprecedented growth of the computer industry, and the launching of
+communication satellites.
+As a result of rapid technological progress, these areas are rapidly converging and the differences between
+collecting, transporting, storing, and processing information are quickly disappearing. Organizations with
+hundreds of offices spread over a wide geographical area routinely expect to be able to examine the current
+status of even their most remote outpost at the push of a button. As our ability to gather, process, and distribute
+information grows, the demand for ever more sophisticated information processing grows even faster.
+Although the computer industry is still young compared to other industries (e.g., automobiles and air
+transportation), computers have made spectacular progress in a short time. During the first two decades of their
+existence, computer systems were highly centralized, usually within a single large room.
+21
+
+ Not infrequently, this
+room had glass walls, through which visitors could gawk at the great electronic wonder inside. A medium-sized
+company or university might have had one or two computers, while large institutions had at most a few dozen.
+The idea that within twenty years equally powerful computers smaller than postage stamps would be mass
+produced by the millions was pure science fiction.
+The merging of computers and communications has had a profound influence on the way computer systems are
+organized. The concept of the ''computer center'' as a room with a large computer to which users bring their work
+for processing is now totally obsolete. The old model of a single computer serving all of the organization's
+computational needs has been replaced by one in which a large number of separate but interconnected
+computers do the job. These systems are called computer networks. The design and organization of these
+networks are the subjects of this book.
+Throughout the book we will use the term ''computer network'' to mean a collection of autonomous computers
+interconnected by a single technology. Two computers are said to be interconnected if they are able to
+exchange information. The connection need not be via a copper wire; fiber optics, microwaves, infrared, and
+communication satellites can also be used. Networks come in many sizes, shapes and forms, as we will see
+later. Al
+22
+
+though it may sound strange to some people, neither the Internet nor the World Wide Web is a computer
+network. By the end of this book, it should be clear why. The quick answer is: the Internet is not a single network
+but a network of networks and the Web is a distributed system that runs on top of the Internet.
+There is considerable confusion in the literature between a computer network and a distributed system. The key
+distinction is that in a distributed system, a collection of independent computers appears to its users as a single
+coherent system. Usually, it has a single model or paradigm that it presents to the users. Often a layer of
+software on top of the operating system, called middleware, is responsible for implementing this model. A well-
+known example of a distributed system is the World Wide Web, in which everything looks like a document (Web
+page).
+In a computer network, this coherence, model, and software are absent. Users are exposed to the actual
+machines, without any attempt by the system to make the machines look and act in a coherent way. If the
+machines have different hardware and different operating systems, that is fully visible to the users. If a user
+wants to run a program on a remote machine, he [ ] has to log onto that machine and run it there.
+[
+]
+''He'' should be read as ''he or she'' throughout this book.
+In effect, a distributed system is a softw
+23
+
+are system built on top of a network. The software gives it a high degree
+of cohesiveness and transparency. Thus, the distinction between a network and a distributed system lies with
+the software (especially the operating system), rather than with the hardware.
+11
+Nevertheless, there is considerable overlap between the two subjects. For example, both distributed systems
+and computer networks need to move files around. The difference lies in who invokes the movement, the system
+or the user. Although this book primarily focuses on networks, many of the topics are also important in
+distributed systems. For more information about distributed systems, see (Tanenbaum and Van Steen, 2002).
+1.1 Uses of Computer Networks
+Before we start to examine the technical issues in detail, it is worth devoting some time to pointing out why
+people are interested in computer networks and what they can be used for. After all, if nobody were interested in
+computer networks, few of them would be built. We will start with traditional uses at companies and for
+individuals and then move on to recent developments regarding mobile users and home networking.
+1.1.1 Business Applications
+Many companies have a substantial number of computers. For example, a company may have separate
+computers to monitor production, keep track of inventories, and do the payroll. Initially, each of these computers
+may have worked
+24
+
+ in isolation from the others, but at some point, management may have decided to connect
+them to be able to extract and correlate information about the entire company.
+Put in slightly more general form, the issue here is resource sharing, and the goal is to make all programs,
+equipment, and especially data available to anyone on the network without regard to the physical location of the
+resource and the user. An obvious and widespread example is having a group of office workers share a common
+printer. None of the individuals really needs a private printer, and a high-volume networked printer is often
+cheaper, faster, and easier to maintain than a large collection of individual printers.
+However, probably even more important than sharing physical resources such as printers, scanners, and CD
+burners, is sharing information. Every large and medium-sized company and many small companies are vitally
+dependent on computerized information. Most companies have customer records, inventories, accounts
+receivable, financial statements, tax information, and much more online. If all of its computers went down, a bank
+could not last more than five minutes. A modern manufacturing plant, with a computer-controlled assembly line,
+would not last even that long. Even a small travel agency or three-person law firm is now highly dependent on
+computer networks for allowing employees to access releva
+25
+
+nt information and documents instantly.
+For smaller companies, all the computers are likely to be in a single office or perhaps a single building, but for
+larger ones, the computers and employees may be scattered over dozens of offices and plants in many
+countries. Nevertheless, a sales person in New York might sometimes need access to a product inventory
+database in Singapore. In other words, the mere fact that a user happens to be 15,000 km away from his data
+should not prevent him from using the data as though they were local. This goal may be summarized by saying
+that it is an attempt to end the ''tyranny of geography.''
+In the simplest of terms, one can imagine a company's information system as consisting of one or more
+databases and some number of employees who need to access them remotely. In this model, the data are
+stored on powerful computers called servers. Often these are centrally housed and maintained by a system
+administrator. In contrast, the employees have simpler machines, called clients, on their desks, with which they
+access remote data, for example, to include in spreadsheets they are constructing. (Sometimes we will refer to
+the human user of the client machine as the ''client,'' but it should be clear from the context whether we mean the
+computer or its user.) The client and server machines are connected by a network, as illustrated in Fig. 1-1. Note
+that
+26
+
+ we have shown the network as a simple oval, without any detail. We will use this form when we mean a
+network in the abstract sense. When more detail is required, it will be provided.
+Figure 1-1. A network with two clients and one server.
+12
+This whole arrangement is called the client-server model. It is widely used and forms the basis of much network
+usage. It is applicable when the client and server are both in the same building (e.g., belong to the same
+company), but also when they are far apart. For example, when a person at home accesses a page on the
+World Wide Web, the same model is employed, with the remote Web server being the server and the user's
+personal computer being the client. Under most conditions, one server can handle a large number of clients.
+If we look at the client-server model in detail, we see that two processes are involved, one on the client machine
+and one on the server machine. Communication takes the form of the client process sending a message over
+the network to the server process. The client process then waits for a reply message. When the server process
+gets the request, it performs the requested work or looks up the requested data and sends back a reply. These
+messages are shown in Fig. 1-2.
+Figure 1-2. The client-server model involves requests and replies.
+A second goal of setting up a computer network has to do with people rather than inform
