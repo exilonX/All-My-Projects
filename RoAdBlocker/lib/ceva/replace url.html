@@ -1,0 +1,22 @@
+<html>
+<head>
+<body>
+<script type="text/javascript">
+var url="http://content.ad20.net/Storage/198691_E300A8883CA04E94963DFDB66CB3B6D2/index.html?id=198691&dir=http%3A//content.ad20.net/Storage/198691_E300A8883CA04E94963DFDB66CB3B6D2/&trk=1&trkimg=http%3A//core.ad20.net/x0.gif&click=http%3A//core.ad20.net/click&site=prosport&zone=Special&params=%26snocache%3D1310600860088_47716228274947710%26spgid%3D81826781150991180%26sck%3Dy%26sfver%3D10%26__x1ts%3D44a6bee1%26sww%3D1261%26swh%3D861%26sifr%3D0%26pub%3D62%26site%3D3349%26section%3D136%26zone%3D78%26size%3D0x0%26xcrid%3D198691%26xgeo%3DRO|10|0|Bucharest||0|%26x1guid%3D146320702202322700&dtime=15&url=http%3A//www.prosport.ro/fotbal-extern/stranieri/video-doar-hagi-dadea-asa-goluri-ce-executie-a-reusit-zicu-impotriva-lui-paok-boloni-a-ramas-masca-8494715";
+var ok= url.search("ad20");
+var urlbun = "";
+if(ok != -1)
+{
+document.write("ceva frumos");
+var index=url.lastIndexOf("http%3A");
+urlbun=url.substr(index,url.length);
+document.write(urlbun + "<br>");
+document.write(urlbun.replace("%3A",":"));
+}
+else
+document.write("altceva");
+</script>
+</body>
+</head>
+</html>
+
