@@ -1,0 +1,18 @@
+Test joi 8-10
+Creati urmatoarele functionale:
+
+1) Compose - ia doua functii unare si intoarce o a treia care reprezinta compusa lor. Ex:
+
+(define is-one? (compose zero? sub1))
+
+2) make-probabilistic - ia o functie si o probabilitate p si intoarce o functie care in p% din cazuri se comporta ca functia data ca parametru si in (1-p)% din cazuri intoarce argumentul neschimbat.
+
+Folositi functia random.
+
+(random) => Un numar real intre 0 si 1
+
+Ex.:
+
+(define probably-add1 (make-probabilistic add1 0.75))
+
+(probably-add1 3) => in 75% din cazuri da 4, in 25% din cazuri da 3

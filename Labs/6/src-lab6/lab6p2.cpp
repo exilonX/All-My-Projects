@@ -1,0 +1,203 @@
+#include <iostream>
+#include <algorithm>
+#include <fstream>
+#include <map>
+#include <queue>
+#include <string>
+#include <cstring>
+#include <vector>
+
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
+
+enum Color {
+  WHITE,
+  GRAY,
+  BLACK
+};
+
+struct Node {
+  Color color;
+  unsigned int startTime;
+  unsigned int finishTime;
+  std::string subjectName;
+  unsigned int inDegree;
+
+  std::vector<Node*> neigh;
+
+  Node(std::string subjectName) : subjectName(subjectName), inDegree(0) { }
+};
+
+/* Functie care compara doua noduri in functie de timpul de finish. */
+bool compareNodePointersByFinishTime(const Node* left, const Node* right)
+{
+  return left->finishTime < right->finishTime;
+}
+
+typedef std::vector<Node*> Graph;
+
+std::map<std::string, unsigned int> subjectToInt;
+
+bool comp (Node* a, Node* b){
+	return a->finishTime > b->finishTime;
+}
+
+void dfs(Node* node, unsigned int& time)
+{
+  /* TODO: Puteti folosi aceasta functie pentru a implementa o parcurgere in
+   * adancime (in cadrul careia sa completati si timpii de finish). */
+	time++;	
+	node->startTime = time;
+
+	node->color = GRAY;
+	for (int i = 0; i < node->neigh.size(); i++)
+		if (node->neigh[i]->color == WHITE)
+			dfs(node->neigh[i], time);
+
+	node->color = BLACK;
+	time++;
+	node->finishTime = time;
+	
+}
+
+void topologicalSorting(Graph& graph)
+{
+  /* TODO: Sortati vectorul primit ca parametru astfel incat sa contina
+   * pointerii la noduri in ordine topologica. */
+	unsigned int time = 0;
+	for (int i = 0; i< graph.size(); i++)
+		graph[i]->color = WHITE;
+
+	for (int i = 0; i < graph.size(); i++)
+		if (graph[i]->color == WHITE){
+			dfs(graph[i], time);
+		}
+
+	sort(graph.begin(),graph.end(),comp);
+}
+
+Graph Kahn (Graph& graph){
+	
+	Graph ts;
+	Graph s;
+	Node *n;
+	for (int i = 0; i < graph.size(); i++)
+		if (graph[i]->inDegree == 0)
+			s.push_back(graph[i]);
+
+	while (s.size() > 0){
+		n = s.back();
+		ts.push_back(n);
+		s.pop_back();
+		for (int i = 0; i < n->neigh.size(); i++){
+			n->neigh[i]->inDegree--;
+			if (n->neigh[i]->inDegree == 0)
+				s.push_back(n->neigh[i]);
+		}
+		
+	}
+   return ts;
+}
+
+void planYears(Graph& graph,
+               std::vector<std::vector<std::string> >& yearlyPlanning)
+{
+  /* TODO: Folosind algoritmul lui Kahn, impartiti materiile la care fac
+   * referire nodurile din vectorul graph pe ani, astfel incat:
+   *
+   * (a) Daca o materie A depinde de o materie B, atunci anul in care se face
+   * materia A trebuie sa fie _strict_ mai mare decat anul in care se face
+   * materia B.
+   *
+   * (b) Intr-un an nu se pot face mai mult de 5 materii.
+   *
+   * (c) Fiecare matrie trebuie planificata.
+   *
+   * In varaibila yearly planning veti pune in ordine, vectori de stringuri care
+   * contin materiile ce vor fi parcurse in anii consecutivi de studiu: 1, 2, 3,
+   * etc.
+   */
+
+	std::vector<std::string> y1, y2, y3, y4;
+
+	yearlyPlanning.push_back(y1);
+	yearlyPlanning.push_back(y2);
+	yearlyPlanning.push_back(y3);
+	yearlyPlanning.push_back(y4);
+
+	
+	Node *n;
+
+	for (int i = 0; i < graph.size(); i++)
+		graph[i] -> inDegree = 0;
+
+	for (int i = 0; i < graph.size(); i++){
+		n = graph[i];
+		for (int j = 0; j < n->neigh.size(); j++)
+			n->neigh[j]->inDegree = n->inDegree + 1;
+		if (yearlyPlanning[n->inDegree].size() >= 5){
+			n->inDegree++; 
+			i--;
+		}
+		else
+			yearlyPlanning[n->inDegree].push_back(n->subjectName);
+	}	
+}
+
+int main()
+{
+  /* Declaram un graf. */
+  Graph graph;
+
+  /* Citim un graf din fisierul de intrare. */
+  std::ifstream in("src-lab6/Materii.txt");
+  unsigned int edgeCount;
+  in >> edgeCount;
+
+  std::string subjectA, separator, subjectB;
+  for (unsigned int i = 0; i < edgeCount; ++i) {
+    in >> subjectA >> separator >> subjectB;
+
+    /* Daca n-am mai vazut niciodata subjectA, atunci creaza-i un cod unic. */
+    if (subjectToInt.count(subjectA) == 0) {
+      unsigned int code = subjectToInt.size();
+      subjectToInt[subjectA] = code;
+      graph.push_back(new Node(subjectA));
+    }
+
+    /* La fel facem si cu subjectB. */
+    if (subjectToInt.count(subjectB) == 0) {
+      unsigned int code = subjectToInt.size();
+      subjectToInt[subjectB] = code;
+      graph.push_back(new Node(subjectB));
+    }
+
+    /* Adaugam subjectB ca vecin al lui subjectA. */
+    graph[subjectToInt[subjectA]]->neigh.push_back(
+        graph[subjectToInt[subjectB]]);
+    graph[subjectToInt[subjectB]]->inDegree++;
+  }
+
+  topologicalSorting(graph);
+  //graph = Kahn(graph);
+  std::cout << "O posibila sortare topologica este: " << std::endl;
+  for (unsigned int i = 0; i < graph.size(); ++i) {
+    std::cout << "\t" << graph[i]->subjectName << std::endl;
+  }
+
+  /* Facem impartirea pe ani. */
+  std::vector<std::vector<std::string> > yearlyPlanning;
+  planYears(graph, yearlyPlanning);
+
+  std::cout << std::endl << "Iar o impartire pe ani ar putea fi urmatoarea: "
+      << std::endl;
+  for (unsigned int i = 0; i < yearlyPlanning.size(); ++i) {
+    std::cout << "Anul " << (i + 1) << std::endl;
+    std::vector<std::string>& subjects = yearlyPlanning[i];
+    for (unsigned int j = 0; j < subjects.size(); ++j) {
+      std::cout << "\t" << subjects[j] << std::endl;
+    }
+  }
+
+  return 0;
+}
+

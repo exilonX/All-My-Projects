@@ -1,0 +1,2 @@
+greedy - solutia la pasul curent depinde doar de sol de la pasul precedent
+La prog dinamica, sol curenta depinde de toate sol anterioare(sau un subset din sol anterioare)
